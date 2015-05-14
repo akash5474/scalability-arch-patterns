@@ -15,6 +15,29 @@ if ( cluster.isMaster ) {
       cluster.fork();
     }
   });
+
+  process.on('SIGUSR2', () => {
+    console.log('Restarting workers...');
+    let workers = Object.keys(cluster.workers);
+
+    function restartWorkers(i) {
+      if ( i >= workers.length ) return;
+      let worker = cluster.workers[ workers[i] ];
+
+      console.log('Stopping worker:', worker.process.pid);
+      worker.disconnect();
+
+      worker.on('exit', () => {
+        if (!worker.suicide) return;
+        let newWorker = cluster.fork();
+        newWorker.on('listening', () => {
+          restartWorkers(i + 1);
+        });
+      });
+    }
+
+    restartWorker(0);
+  });
 } else {
   server();
 }
