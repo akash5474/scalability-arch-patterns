@@ -4,4 +4,7 @@ require('babel/register');
 // require('./vertical-scaling/server')();
 
 // Clusted Server Example
-require('./vertical-scaling/clusteredServer');
+// require('./vertical-scaling/clusteredServer');
+
+// Service Registry Example
+require('./horizontal-scaling/dynamic/server');
