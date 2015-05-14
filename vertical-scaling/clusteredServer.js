@@ -23,7 +23,7 @@ if ( cluster.isMaster ) {
     console.log('Restarting workers...');
     let workers = Object.keys(cluster.workers);
 
-    function restartWorkers(i) {
+    function restartWorker(i) {
       if ( i >= workers.length ) return;
       let worker = cluster.workers[ workers[i] ];
 
@@ -34,7 +34,7 @@ if ( cluster.isMaster ) {
         if (!worker.suicide) return;
         let newWorker = cluster.fork();
         newWorker.on('listening', () => {
-          restartWorkers(i + 1);
+          restartWorker(i + 1);
         });
       });
     }
