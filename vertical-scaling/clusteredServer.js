@@ -8,6 +8,13 @@ if ( cluster.isMaster ) {
   for ( let i = 0; i < forkableCPUs; i++ ) {
     cluster.fork();
   }
+
+  cluster.on('exit', (worker, code) => {
+    if ( code != 0 && !worker.suicide ) {
+      console.log('Worker crashed, starting new worker.');
+      cluster.fork();
+    }
+  });
 } else {
   server();
 }
